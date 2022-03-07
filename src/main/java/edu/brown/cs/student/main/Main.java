@@ -6,14 +6,21 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import freemarker.template.Configuration;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import spark.*;
 import spark.template.freemarker.FreeMarkerEngine;
 
@@ -80,6 +87,11 @@ public final class Main {
     // Allows requests from any domain (i.e., any URL). This makes development
     // easier, but it’s not a good idea for deployment.
     Spark.before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
+
+    // For each route handler, run and replace with the correct names
+    Spark.post("/results", new ResultsHandler());
+
+
   }
 
   /**
@@ -108,16 +120,62 @@ public final class Main {
     @Override
     public String handle(Request req, Response res) {
       // TODO: Get JSONObject from req and use it to get the value of the sun, moon,
+      JSONObject reqJson;
+      System.out.println(req.body());
+      try {
+        // Put the request's body in JSON format
+        reqJson = new JSONObject(req.body());
+        reqJson = reqJson.getJSONObject("postParameters");
+      } catch (JSONException e) {
+        reqJson = null;
+        e.printStackTrace();
+      }
+
+      try {
+        System.out.println(reqJson.getJSONObject("postParameters"));
+      } catch (JSONException e) {
+        e.printStackTrace();
+      }
+
+      String sun = null;
+      try {
+        sun = reqJson.getString("sun");
+      } catch (JSONException e) {
+        e.printStackTrace();
+      }
+      String moon = null;
+      try {
+        moon = reqJson.getString("moon");
+      } catch (JSONException e) {
+        e.printStackTrace();
+      }
+      String rising = null;
+      try {
+        rising = reqJson.getString("rising");
+      } catch (JSONException e) {
+        e.printStackTrace();
+      }
+
+      System.out.println(sun);
+      System.out.println(moon);
+      System.out.println(rising);
       // and rising
       // for generating matches
 
       // TODO: use the MatchMaker.makeMatches method to get matches
+      MatchMaker matchMaker = new MatchMaker();
+      List<String> matches = matchMaker.makeMatches(sun, moon, rising);
+      for (String m : matches) {
+        System.out.println(m);
+      }
 
       // TODO: create an immutable map using the matches
+      Map mapMatches = ImmutableMap.of("matches", matches);
 
       // TODO: return a json of the suggestions (HINT: use GSON.toJson())
       Gson GSON = new Gson();
-      return null;
+      String matchesFinal = GSON.toJson(mapMatches);
+      return matchesFinal;
     }
   }
 }
