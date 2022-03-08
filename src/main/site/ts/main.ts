@@ -8,6 +8,15 @@ let rising = document.getElementById('rising') as HTMLInputElement;
 let suggestions = document.getElementById('suggestions') as HTMLInputElement;
 
 // Here, when the value of sun is changed, we will call the method postAndUpdate.
+sun.addEventListener('change', (event) => {
+  postAndUpdate()
+});
+moon.addEventListener('change', (event) => {
+  postAndUpdate()
+});
+rising.addEventListener('change', (event) => {
+  postAndUpdate()
+});
 // TODO: Do the same for moon and rising
 
 // TODO: Define a type for the request data object here.
@@ -39,14 +48,13 @@ function postAndUpdate(): void {
   //  Make sure you add "Access-Control-Allow-Origin":"*" to your headers.
   //  Remember to add a type annotation for the response data using the Matches type you defined above!
 
-  fetch('https://localhost:4567/results', {
+  fetch('http://localhost:4567/results', {
     // Request method
     method: 'POST',
     // Data in JSON format to send in the request
-    body: JSON.stringify({
+    body: JSON.stringify(
       //NEED TO ADD MATCHES HERE
-      postParameters
-    }),
+      postParameters),
     // HTTP headers to tell the receiving server what format the data is in
     headers: {
       'Content-Type': 'application/json; charset=UTF-8',

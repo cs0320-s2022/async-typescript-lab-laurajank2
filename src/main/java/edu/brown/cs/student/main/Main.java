@@ -125,15 +125,8 @@ public final class Main {
       try {
         // Put the request's body in JSON format
         reqJson = new JSONObject(req.body());
-        reqJson = reqJson.getJSONObject("postParameters");
       } catch (JSONException e) {
         reqJson = null;
-        e.printStackTrace();
-      }
-
-      try {
-        System.out.println(reqJson.getJSONObject("postParameters"));
-      } catch (JSONException e) {
         e.printStackTrace();
       }
 

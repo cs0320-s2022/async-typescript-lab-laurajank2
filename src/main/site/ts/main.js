@@ -14,6 +14,16 @@ let sun = document.getElementById('sun');
 let moon = document.getElementById('moon');
 let rising = document.getElementById('rising');
 let suggestions = document.getElementById('suggestions');
+// Here, when the value of sun is changed, we will call the method postAndUpdate.
+sun.addEventListener('change', (event) => {
+    postAndUpdate();
+});
+moon.addEventListener('change', (event) => {
+    postAndUpdate();
+});
+rising.addEventListener('change', (event) => {
+    postAndUpdate();
+});
 function postAndUpdate() {
     // TODO: empty the suggestionList (you want new suggestions each time someone types something new)
     //  HINT: use .innerHTML
@@ -35,10 +45,9 @@ function postAndUpdate() {
         // Request method
         method: 'POST',
         // Data in JSON format to send in the request
-        body: JSON.stringify({
-            //NEED TO ADD MATCHES HERE
-            postParameters
-        }),
+        body: JSON.stringify(
+        //NEED TO ADD MATCHES HERE
+        postParameters),
         // HTTP headers to tell the receiving server what format the data is in
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',
